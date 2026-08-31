@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ChefHat, Home, Menu as MenuIcon, Search, ShoppingBag, Soup, UserRound, Utensils } from "lucide-react";
 import InteractivePlate from "./interactive-plate";
 import styles from "./not-found.module.css";
-
 function ChalkDecorations() {
   return (
     <div className={styles.decorations} aria-hidden="true">
