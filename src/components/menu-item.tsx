@@ -1,50 +1,53 @@
-import { Flame, TrendingUp } from "lucide-react";
+import Image from "next/image";
+import { ShoppingBag, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { Dish } from "@/lib/food";
 
-interface MenuItemProps {
-  dish: Dish;
-}
-
-export default function MenuItem({ dish }: MenuItemProps) {
-  const { name, category, price, description, image, spicy, popular } = dish;
-
+export default function MenuItem({ dish }: { dish: Dish }) {
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-lg">
-      <div className="relative h-48 w-full overflow-hidden">
-        <img
-          src={image}
-          alt={name}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+    <Card size="sm" className="group overflow-hidden">
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <Image
+          src={dish.image}
+          alt={dish.name}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute top-3 left-3 flex gap-1.5">
-          {popular && (
-            <Badge className="bg-orange-500 text-white hover:bg-orange-500">
-              <TrendingUp className="size-3" />
-              Popular
-            </Badge>
-          )}
-          {spicy && (
-            <Badge variant="destructive">
-              <Flame className="size-3" />
-              Spicy
-            </Badge>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold leading-tight">{name}</h3>
-          <span className="whitespace-nowrap font-bold text-primary">
-            ${price.toFixed(2)}
-          </span>
-        </div>
-        <Badge variant="outline" className="w-fit text-xs text-muted-foreground">
-          {category}
+        <Badge className="absolute top-3 left-3 bg-background/80 text-foreground backdrop-blur-sm">
+          {dish.tag}
         </Badge>
-        <p className="line-clamp-2 text-sm text-muted-foreground">{description}</p>
       </div>
-    </div>
+      <CardHeader>
+        <CardTitle>{dish.name}</CardTitle>
+        <p className="text-xs text-orange-600">{dish.khmer}</p>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {dish.description}
+        </p>
+      </CardContent>
+      <CardFooter>
+        <span className="text-lg font-bold text-orange-600">
+          ${dish.price.toFixed(2)}
+        </span>
+        <div className="ml-auto flex items-center gap-1">
+          <Star className="size-4 fill-amber-400 text-amber-400" />
+          <span className="text-sm font-medium">4.9</span>
+        </div>
+        <Button size="sm" variant="secondary" className="ml-3">
+          <ShoppingBag />
+          Add
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }

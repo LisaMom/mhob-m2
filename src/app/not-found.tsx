@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ChefHat, Home, Menu as MenuIcon, Search, ShoppingBag, Soup, UserRound, Utensils } from "lucide-react";
+import SiteHeader from "@/components/site-header";
+import { ChefHat, Home, Soup, Utensils } from "lucide-react";
 import InteractivePlate from "./interactive-plate";
 import styles from "./not-found.module.css";
 function ChalkDecorations() {
@@ -25,41 +26,10 @@ function ChalkDecorations() {
   );
 }
 
-function RestaurantNav() {
-  return (
-    <header className={styles.header}>
-      <nav className={styles.nav} aria-label="Main navigation">
-        <Link href="/" className={styles.brand} aria-label="Savory home">
-          <span className={styles.brandMark}><ChefHat size={22} strokeWidth={1.8} /></span>
-          <span>SAVORY</span>
-        </Link>
-        <div className={styles.navLinks}>
-          <Link href="/">Home</Link><Link href="/product">Menu</Link>
-          <Link href="/about">About</Link>
-        </div>
-        <div className={styles.actions}>
-          <button type="button" aria-label="Search"><Search size={19} /></button>
-          <button type="button" aria-label="Your profile"><UserRound size={19} /></button>
-          <Link href="/product" className={styles.cart} aria-label="Shopping bag, 2 items">
-            <ShoppingBag size={20} /><span>2</span>
-          </Link>
-        </div>
-        <details className={styles.mobileMenu}>
-          <summary aria-label="Open navigation menu"><MenuIcon size={24} /></summary>
-          <div>
-            <Link href="/">Home</Link><Link href="/product">Menu</Link>
-            <Link href="/about">About</Link>
-          </div>
-        </details>
-      </nav>
-    </header>
-  );
-}
-
 export default function NotFoundPage() {
   return (
     <div className={styles.page}>
-      <RestaurantNav />
+      <SiteHeader />
       <ChalkDecorations />
       <main className={styles.content}>
         <div className={styles.intro}>

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Noto_Sans_Khmer } from "next/font/google";
 import Link from "next/link";
 import { Utensils } from "lucide-react";
 import "./globals.css";
+import SiteHeader from "@/components/site-header";
+import SiteFooter from "@/components/site-footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,8 +23,9 @@ const notoKhmer = Noto_Sans_Khmer({
 });
 
 export const metadata: Metadata = {
-  title: "Mhob-M2 - Food & Products Catalog",
-  description: "Display all food products with detailed views",
+  title: "Mhob-M2 — Good Food, Great Vibes",
+  description:
+    "Authentic Cambodian street food and home-cooked classics, made fresh every single day.",
 };
 
 interface RootLayoutProps {
