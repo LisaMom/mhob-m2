@@ -31,15 +31,21 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html
+    <html 
       lang="km" // Changed to 'km' for Khmer language accessibility
       className={`${geistSans.variable} ${geistMono.variable} ${notoKhmer.variable} h-full antialiased`}
     >
-      <nav className="bg-red-400">Navbar</nav>
       <body className="min-h-full flex flex-col font-khmer">
-        {children}
+        <nav className="bg-red-400">Navbar</nav>
+        
+        {/* The grow class ensures the main content fills the space, pushing the footer down */}
+        <main className="grow">
+          {children}
+        </main>
+        
+        <footer className="bg-blue-400">Footer</footer>
       </body>
-      <footer className="bg-blue-400">Footer</footer>
     </html>
   );
 }
+

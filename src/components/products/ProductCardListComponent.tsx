@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import EcommerceProductCard from "@/ProductCardComponent";
 import EcommerceProductCard from "./ProductCardComponent"; 
+import { Link } from "lucide-react";
 
 interface Product {
   id: number;
@@ -39,15 +39,18 @@ export default function ProductCardListComponent() {
   if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
 
   return (
-    <div className="flex flex-wrap justify-center gap-4 p-8">
+    <div className="Container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 flex flex-wrap justify-center gap-4 p-8">
       {products.map(({ id, image, title, description, price }) => (
-        <EcommerceProductCard
-          key={id}
-          image={image}
-          title={title}
-          description={description}
-          price={price}
-        />
+       <Link key={id} href={`product/${id}`}>
+            <EcommerceProductCard
+                key={id}
+                image={image}
+                title={title}
+                description={description}
+                price={price}
+            />
+       </Link>
+
       ))}
     </div>
   );

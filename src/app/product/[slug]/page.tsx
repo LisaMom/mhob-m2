@@ -1,3 +1,4 @@
+import { ProductDetail1 } from "@/components/products/ProductDetailComponent";
 import EcommerceProductCard from "@/components/shadcn-space/card/card-17";
 
 export default async function ProductDetailPage({
@@ -8,7 +9,9 @@ export default async function ProductDetailPage({
     const {slug} = await params;
   return (
     <div>
-        <h1>Product Slug : {slug}</h1>
+        {/* <h1>Product Slug : {slug}</h1> */}
+
+        {/* <ProductDetail1/> */}
  
     </div>
   )
