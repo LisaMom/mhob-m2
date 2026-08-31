@@ -1,134 +1,58 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleCheck, Star, StarHalf } from "lucide-react";
-import { useEffect, useState } from "react";
-import type { ControllerRenderProps } from "react-hook-form";
-import { Controller, useForm } from "react-hook-form";
-import z from "zod";
 
-import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  CircleCheck,
+  Clock,
+  Flame,
+  ShoppingBag,
+  Utensils,
+  Star,
+  RefreshCw,
+  AlertTriangle,
+  CheckCircle2,
+} from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 
-type StockStatusCode = "IN_STOCK" | "OUT_OF_STOCK";
-
-interface StockInfo {
-  stockStatusCode?: StockStatusCode;
-  stockQuantity?: number;
-}
-
-type option = {
+interface FoodItemDetail {
   id: string;
-  label: string;
-  stockInfo: StockInfo;
-  color?: string;
-  value: string;
-};
-
-interface Hinges {
-  label: string;
-  id: string;
-  name: FieldName;
-  options?: option[];
-  min?: number;
-  max?: number;
-}
-
-interface ProductImagesProps {
-  images: Array<{
-    srcset: string;
-    src: string;
-    alt: string;
-    width: number;
-    height: number;
-    sizes: string;
-  }>;
-}
-
-interface ReviewsProps {
-  rate: number;
-  totalReviewers: string;
-}
-
-interface PriceProps {
-  regular: number;
-  sale?: number;
-  currency: string;
-  text?: string;
-}
-
-interface ProductInfoProps {
-  info?: Array<{
-    label: string;
-    value: string;
-  }>;
-}
-
-type FormType = z.infer<typeof formSchema>;
-type FieldName = keyof FormType;
-
-type SizeOptionProps = option;
-
-interface RadioGroupProps {
-  options?: Array<option>;
-  field: ControllerRenderProps<FormType>;
-}
-
-interface ProductFormProps {
-  hinges?: Record<FieldName, Hinges>;
-  selected: FormType;
-}
-
-const MAX_STARS = 5;
-
-// Static hinges (Fake Store API has no size/color variants, so we keep a
-// mock size selector for demo purposes; swap or remove if not needed)
-const DEFAULT_HINGES = {
-  size: {
-    label: "Select size",
-    id: "size",
-    name: "size",
-    options: [
-      { id: "xs", label: "xs", value: "xs", stockInfo: { stockStatusCode: "OUT_OF_STOCK" } },
-      { id: "s", label: "s", value: "s", stockInfo: { stockStatusCode: "OUT_OF_STOCK" } },
-      { id: "m", label: "m", value: "m", stockInfo: { stockStatusCode: "IN_STOCK" } },
-      { id: "l", label: "l", value: "l", stockInfo: { stockStatusCode: "IN_STOCK" } },
-      { id: "xl", label: "xl", value: "xl", stockInfo: { stockStatusCode: "IN_STOCK" } },
-    ],
-  },
-} as Record<FieldName, Hinges>;
-
-interface FakeStoreProduct {
-  id: number;
-  title: string;
-  price: number;
+  name: string;
   description: string;
-  category: string;
-  image: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
+  price: number;
+  image_url: string;
+  category?: string;
+  cuisine?: string;
+  calories?: number;
+  protein?: number;
+  carbs?: number;
+  fat?: number;
+  ingredients?: string[] | string;
+  preparation_time_minutes?: number;
+  meal_types?: string[];
+  average_rating?: number | null;
+  rating_count?: number;
+  available?: boolean;
 }
 
-interface ProductDetail1Props {
+interface ProductDetailProps {
   className?: string;
-  id: string | number;
+  id: string;
 }
 
-const ProductDetail1 = ({ className, id }: ProductDetail1Props) => {
-  const [singleProduct, setSingleProduct] = useState<FakeStoreProduct | null>(null);
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop";
+
+const ProductDetail1 = ({ className, id }: ProductDetailProps) => {
+  const [singleProduct, setSingleProduct] = useState<FoodItemDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [imgSrc, setImgSrc] = useState<string>("");
+  const [quantity, setQuantity] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -137,12 +61,13 @@ const ProductDetail1 = ({ className, id }: ProductDetail1Props) => {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+        const res = await fetch(`https://sombobaeb.cheat.casa/food-items/${id}`);
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-        const data: FakeStoreProduct = await res.json();
+        const data: FoodItemDetail = await res.json();
         setSingleProduct(data);
+        setImgSrc(data.image_url || FALLBACK_IMAGE);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong");
+        setError(err instanceof Error ? err.message : "Failed to fetch product detail");
       } finally {
         setLoading(false);
       }
@@ -153,9 +78,12 @@ const ProductDetail1 = ({ className, id }: ProductDetail1Props) => {
 
   if (loading) {
     return (
-      <section className={cn("py-32", className)}>
-        <div className="container text-center text-muted-foreground">
-          Loading product…
+      <section className={cn("py-16 md:py-24", className)}>
+        <div className="container mx-auto px-4 text-center flex flex-col items-center justify-center space-y-4 min-h-[400px]">
+          <RefreshCw className="w-10 h-10 animate-spin text-primary" />
+          <p className="text-muted-foreground font-medium animate-pulse">
+            កំពុងទាញយកព័ត៌មានលម្អិត... (Loading product details...)
+          </p>
         </div>
       </section>
     );
@@ -163,320 +91,203 @@ const ProductDetail1 = ({ className, id }: ProductDetail1Props) => {
 
   if (error || !singleProduct) {
     return (
-      <section className={cn("py-32", className)}>
-        <div className="container text-center text-destructive">
-          {error ?? "Product not found"}
+      <section className={cn("py-16 md:py-24 animate-in fade-in duration-300", className)}>
+        <div className="container mx-auto px-4 max-w-lg text-center space-y-6 bg-destructive/10 border border-destructive/20 rounded-2xl p-8 shadow-sm">
+          <AlertTriangle className="w-12 h-12 text-destructive mx-auto animate-bounce" />
+          <h2 className="text-2xl font-bold text-destructive">មិនអាចរកឃើញមុខម្ហូបនេះទេ</h2>
+          <p className="text-muted-foreground">{error ?? "Product not found"}</p>
+          <Link href="/product">
+            <Button variant="default" className="hover:scale-105 transition-transform">
+              <ArrowLeft className="w-4 h-4 mr-2" /> ត្រឡប់ទៅទំព័រមុខម្ហូប (Back to Products)
+            </Button>
+          </Link>
         </div>
       </section>
     );
   }
 
-  // Map the Fake Store API shape into what the render below expects
-  const images = [
-    {
-      srcset: singleProduct.image,
-      src: singleProduct.image,
-      alt: singleProduct.title,
-      width: 800,
-      height: 800,
-      sizes: "(min-width: 1920px) 1920px, (min-width: 1280px) 1280px, 100vw",
-    },
-  ];
-
-  const reviews = {
-    rate: singleProduct.rating?.rate ?? 0,
-    totalReviewers: singleProduct.rating?.count?.toString() ?? "0",
-  };
+  const ingredientsList: string[] = Array.isArray(singleProduct.ingredients)
+    ? singleProduct.ingredients
+    : typeof singleProduct.ingredients === "string"
+    ? (singleProduct.ingredients as string).split(",").map((s) => s.trim())
+    : [];
 
   return (
-    <section className={cn("py-32", className)}>
-      <div className="container">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-          <div>
-            <ProductImages images={images} />
-          </div>
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div className="flex-1">
-                  <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-                    {singleProduct.title}
-                  </h1>
-                  <div className="mt-3 flex flex-wrap items-center gap-4">
-                    <Reviews rate={reviews.rate} totalReviewers={reviews.totalReviewers} />
-                    <Badge variant="secondary">
-                      <CircleCheck />
-                      In Stock
-                    </Badge>
-                  </div>
-                </div>
-                <Price regular={singleProduct.price} currency="USD" />
-              </div>
+    <section className={cn("py-8 md:py-16 bg-background animate-in fade-in duration-500", className)}>
+      <div className="container mx-auto px-4 space-y-8">
+        {/* Back Link */}
+        <div>
+          <Link
+            href="/product"
+            className="inline-flex items-center text-sm font-semibold text-muted-foreground hover:text-primary hover:-translate-x-1 transition-all duration-200"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" /> ត្រឡប់ទៅបញ្ជីម្ហូបទាំងអស់ (Back to All Products)
+          </Link>
+        </div>
 
-              <p className="text-muted-foreground">{singleProduct.description}</p>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12 items-start">
+          {/* Left Column: Image with Smooth Zoom */}
+          <div className="space-y-4 animate-in slide-in-from-left-6 duration-500">
+            <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl border border-border/60 bg-muted shadow-md group">
+              <img
+                src={imgSrc}
+                onError={() => setImgSrc(FALLBACK_IMAGE)}
+                alt={singleProduct.name}
+                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
+              />
+              {singleProduct.available !== false && (
+                <div className="absolute top-4 left-4">
+                  <Badge variant="secondary" className="bg-emerald-500/90 text-white font-semibold px-3 py-1 shadow-md animate-in zoom-in-75 duration-300">
+                    <CircleCheck className="w-3.5 h-3.5 mr-1" /> មានលក់ (Available)
+                  </Badge>
+                </div>
+              )}
             </div>
 
-            <Button size="lg" className="w-full">
-              Buy Now
-            </Button>
+            {/* Badges bar */}
+            <div className="flex flex-wrap gap-2.5 pt-2">
+              {singleProduct.cuisine && (
+                <span className="bg-secondary/80 hover:bg-secondary px-3.5 py-1.5 rounded-full text-xs font-semibold text-secondary-foreground transition-all duration-200 hover:scale-105">
+                  Cuisine: {singleProduct.cuisine}
+                </span>
+              )}
+              {singleProduct.category && (
+                <span className="bg-secondary/80 hover:bg-secondary px-3.5 py-1.5 rounded-full text-xs font-semibold text-secondary-foreground transition-all duration-200 hover:scale-105">
+                  Category: {singleProduct.category}
+                </span>
+              )}
+              {singleProduct.meal_types && singleProduct.meal_types.length > 0 && (
+                <span className="bg-secondary/80 hover:bg-secondary px-3.5 py-1.5 rounded-full text-xs font-semibold text-secondary-foreground transition-all duration-200 hover:scale-105">
+                  Meal: {singleProduct.meal_types.join(", ")}
+                </span>
+              )}
+            </div>
+          </div>
 
-            <ProductForm
-              hinges={DEFAULT_HINGES}
-              selected={{
-                size: "m",
-                color: "default",
-                quantity: 1,
-              }}
-            />
+          {/* Right Column: Product Information */}
+          <div className="space-y-6 animate-in slide-in-from-right-6 duration-500">
+            <div className="space-y-3">
+              <h1 className="text-3xl md:text-4xl font-black tracking-tight text-foreground">
+                {singleProduct.name}
+              </h1>
 
-            <ProductInfo
-              info={[
-                { label: "Category", value: singleProduct.category },
-                { label: "Rating", value: `${reviews.rate} / 5` },
-                { label: "Reviews", value: reviews.totalReviewers },
-              ]}
-            />
+              <div className="flex items-center gap-4">
+                <span className="text-3xl font-black text-primary tracking-tight">
+                  ${singleProduct.price.toFixed(2)}
+                </span>
+                {singleProduct.average_rating ? (
+                  <div className="flex items-center gap-1 bg-amber-500/10 text-amber-600 px-3 py-1 rounded-lg text-sm font-bold shadow-xs">
+                    <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
+                    <span>{singleProduct.average_rating}</span>
+                    <span className="text-xs text-muted-foreground">({singleProduct.rating_count || 0})</span>
+                  </div>
+                ) : null}
+              </div>
+
+              <p className="text-base text-muted-foreground leading-relaxed pt-2">
+                {singleProduct.description}
+              </p>
+            </div>
+
+            {/* Nutrition & Prep Time Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-4 border-y border-border/60">
+              {singleProduct.preparation_time_minutes && (
+                <div className="bg-secondary/40 hover:bg-secondary/70 p-3.5 rounded-2xl text-center space-y-1 transition-all duration-200 hover:scale-105">
+                  <Clock className="w-5 h-5 text-primary mx-auto" />
+                  <p className="text-xs text-muted-foreground font-medium">ពេលរង់ចាំ</p>
+                  <p className="text-sm font-extrabold">{singleProduct.preparation_time_minutes} នាទី</p>
+                </div>
+              )}
+              {singleProduct.calories && (
+                <div className="bg-secondary/40 hover:bg-secondary/70 p-3.5 rounded-2xl text-center space-y-1 transition-all duration-200 hover:scale-105">
+                  <Flame className="w-5 h-5 text-orange-500 mx-auto" />
+                  <p className="text-xs text-muted-foreground font-medium">កាឡូរី</p>
+                  <p className="text-sm font-extrabold">{singleProduct.calories} cal</p>
+                </div>
+              )}
+              {singleProduct.protein !== undefined && (
+                <div className="bg-secondary/40 hover:bg-secondary/70 p-3.5 rounded-2xl text-center space-y-1 transition-all duration-200 hover:scale-105">
+                  <Utensils className="w-5 h-5 text-blue-500 mx-auto" />
+                  <p className="text-xs text-muted-foreground font-medium">Protein</p>
+                  <p className="text-sm font-extrabold">{singleProduct.protein}g</p>
+                </div>
+              )}
+              {singleProduct.carbs !== undefined && (
+                <div className="bg-secondary/40 hover:bg-secondary/70 p-3.5 rounded-2xl text-center space-y-1 transition-all duration-200 hover:scale-105">
+                  <Utensils className="w-5 h-5 text-emerald-500 mx-auto" />
+                  <p className="text-xs text-muted-foreground font-medium">Carbs</p>
+                  <p className="text-sm font-extrabold">{singleProduct.carbs}g</p>
+                </div>
+              )}
+            </div>
+
+            {/* Ingredients */}
+            {ingredientsList.length > 0 && (
+              <div className="space-y-2.5">
+                <h3 className="text-xs font-bold text-foreground uppercase tracking-widest">
+                  គ្រឿងផ្សំ (Ingredients)
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {ingredientsList.map((ingredient, idx) => (
+                    <span
+                      key={idx}
+                      className="bg-accent/80 hover:bg-accent text-accent-foreground text-xs px-3 py-1.5 rounded-xl font-medium border border-border/50 transition-all duration-200 hover:scale-105"
+                    >
+                      {ingredient}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Quantity Selector & Animated Action Buttons */}
+            <div className="space-y-4 pt-4">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-bold">ចំនួន (Quantity):</span>
+                <div className="flex items-center border border-border rounded-xl overflow-hidden shadow-xs">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="px-4 py-2 bg-secondary text-foreground hover:bg-secondary/80 active:scale-95 font-bold transition-all"
+                  >
+                    -
+                  </button>
+                  <span className="px-5 py-2 font-bold min-w-12 text-center text-sm">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="px-4 py-2 bg-secondary text-foreground hover:bg-secondary/80 active:scale-95 font-bold transition-all"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <Button
+                  size="lg"
+                  className={cn(
+                    "flex-1 font-bold text-base py-6 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]",
+                    addedToCart && "bg-emerald-600 hover:bg-emerald-700 text-white"
+                  )}
+                  onClick={() => setQuantity(quantity)}
+                >
+                  {addedToCart ? (
+                    <>
+                      <CheckCircle2 className="w-5 h-5 mr-2 animate-in zoom-in duration-200" />
+                      បានបន្ថែមទៅកន្រ្តក! (Added to Cart)
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-5 h-5 mr-2" />
+                      បញ្ជាទិញឥឡូវនេះ (Order Now)
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
-  );
-};
-
-const ProductInfo = ({ info }: ProductInfoProps) => {
-  if (!info) return;
-
-  return (
-    <div>
-      <h2 className="mb-4 text-lg font-semibold">Product Details</h2>
-      <dl>
-        {info.map((item, index) => (
-          <div
-            key={`product-detail-1-info-${index}`}
-            className="flex items-center justify-between border-b py-3 last:border-b-0"
-          >
-            <dt className="text-sm font-medium text-muted-foreground">
-              {item.label}
-            </dt>
-            <dd className="text-sm font-medium">{item.value}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
-  );
-};
-
-const ProductImages = ({ images }: ProductImagesProps) => {
-  return (
-    <Carousel
-      opts={{
-        breakpoints: {
-          "(min-width: 768px)": {
-            active: false,
-          },
-        },
-      }}
-    >
-      <CarouselContent className="gap-4 md:m-0 md:grid md:grid-cols-3 xl:gap-5">
-        {images.map((img, index) => (
-          <CarouselItem
-            className="first:col-span-3 md:p-0"
-            key={`product-detail-1-image-${index}`}
-          >
-            <AspectRatio ratio={1} className="overflow-hidden rounded-lg">
-              <img
-                srcSet={img.srcset}
-                alt={img.alt}
-                width={img.width}
-                height={img.height}
-                sizes={img.sizes}
-                className="block size-full object-cover object-center"
-              />
-            </AspectRatio>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <div className="md:hidden">
-        <CarouselPrevious className="left-4" />
-        <CarouselNext className="right-4" />
-      </div>
-    </Carousel>
-  );
-};
-
-const Reviews = ({ rate, totalReviewers }: ReviewsProps) => {
-  const renderStars = () => {
-    const fullStars = Math.floor(rate);
-    const hasHalfStar = rate % 1 >= 0.5;
-    const emptyStars = MAX_STARS - fullStars - (hasHalfStar ? 1 : 0);
-
-    const stars = [];
-
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(
-        <Star
-          key={`product-detail-1-star-full-${i}`}
-          className="size-4 fill-yellow-500 stroke-yellow-500"
-        />,
-      );
-    }
-
-    if (hasHalfStar) {
-      stars.push(
-        <div key="product-detail-1-half-star" className="relative size-4">
-          <StarHalf className="absolute top-0 right-0 size-full fill-yellow-500 stroke-yellow-500" />
-          <StarHalf className="absolute top-0 left-0 size-full -scale-x-100 fill-black/15 stroke-black/15 dark:invert" />
-        </div>,
-      );
-    }
-
-    for (let i = 0; i < emptyStars; i++) {
-      stars.push(
-        <Star
-          key={`product-detail-1-star-empty-${i}`}
-          className="size-4 fill-black/15 stroke-black/15 dark:invert"
-        />,
-      );
-    }
-
-    return stars;
-  };
-
-  return (
-    <div className="flex items-center gap-2">
-      <div className="flex items-center gap-1">{renderStars()}</div>
-      {totalReviewers && (
-        <p className="text-base leading-none font-medium whitespace-nowrap text-muted-foreground">
-          {totalReviewers} reviews
-        </p>
-      )}
-    </div>
-  );
-};
-
-const formSchema = z.object({
-  color: z.string(),
-  quantity: z.number().min(1),
-  size: z.string(),
-});
-
-const ProductForm = ({ hinges, selected }: ProductFormProps) => {
-  const form = useForm<FormType>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      color: selected?.color,
-      size: selected?.size,
-      quantity: selected?.quantity,
-    },
-  });
-
-  function onSubmit(values: FormType) {
-    console.log(values);
-  }
-
-  const sizeHinges = hinges?.size;
-
-  return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      {sizeHinges && (
-        <Controller
-          control={form.control}
-          name={sizeHinges.name}
-          render={({ field }) => (
-            <fieldset className="space-y-3">
-              <legend className="text-base font-semibold">
-                {sizeHinges.label}
-              </legend>
-              <SizeRadioGroup field={field} options={sizeHinges.options} />
-            </fieldset>
-          )}
-        />
-      )}
-    </form>
-  );
-};
-
-const Price = ({ regular, sale, currency }: PriceProps) => {
-  if (!regular || !currency) return;
-
-  const formatCurrency = (
-    value: number,
-    currency: string = "USD",
-    locale: string = "en-US",
-  ) => {
-    return new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency,
-    }).format(value);
-  };
-
-  return (
-    <div className="flex items-center gap-2">
-      {sale && (
-        <span className="text-right text-2xl font-bold text-primary">
-          {formatCurrency(sale, currency)}
-        </span>
-      )}
-      <span
-        className={`text-right text-2xl font-bold ${
-          sale ? "text-muted-foreground line-through" : "text-foreground"
-        }`}
-      >
-        {formatCurrency(regular, currency)}
-      </span>
-    </div>
-  );
-};
-
-const SizeRadioGroup = ({ options, field }: RadioGroupProps) => {
-  if (!options) return;
-
-  return (
-    <RadioGroup
-      {...field}
-      value={`${field.value}`}
-      onValueChange={(value) => {
-        if (value != field.value && value) {
-          field.onChange(value);
-        }
-      }}
-      className="flex flex-wrap gap-3"
-    >
-      {options &&
-        options.map((item, index) => (
-          <SizeOption
-            key={`product-detail-1-size-input-${index}`}
-            stockInfo={item.stockInfo}
-            id={item.id}
-            label={item.label}
-            value={item.value}
-          />
-        ))}
-    </RadioGroup>
-  );
-};
-
-const SizeOption = ({ id, label, stockInfo, value }: SizeOptionProps) => {
-  const isOutOfStock = stockInfo.stockStatusCode === "OUT_OF_STOCK";
-
-  return (
-    <label
-      htmlFor={id}
-      className="relative flex h-10 w-16 cursor-pointer items-center justify-center rounded-md border text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground has-checked:bg-primary has-checked:text-primary-foreground has-disabled:pointer-events-none has-disabled:opacity-50"
-    >
-      <RadioGroupItem
-        id={id}
-        className="absolute size-px overflow-hidden opacity-0"
-        value={value}
-        disabled={isOutOfStock}
-      />
-      <span className="uppercase">{label}</span>
-      {isOutOfStock && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="h-px w-full rotate-45 bg-border"></div>
-        </div>
-      )}
-    </label>
   );
 };
 
