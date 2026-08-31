@@ -13,8 +13,9 @@ import styles from "./site-header.module.css";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Menu", href: "/menu" },
+  { label: "Products", href: "/product" },
   { label: "About Us", href: "/about" },
+  { label: "Dashboard", href: "/dashboard" },
   { label: "Login", href: "/login" },
 ];
 
@@ -44,14 +45,14 @@ export default function SiteHeader() {
         </div>
 
         <div className={styles.actions}>
-          <button type="button" aria-label="Search">
+          <Link href="/product" aria-label="Search">
             <Search size={19} />
-          </button>
-          <button type="button" aria-label="Your profile">
+          </Link>
+          <Link href="/dashboard" aria-label="Your profile">
             <UserRound size={19} />
-          </button>
+          </Link>
           <Link
-            href="/menu"
+            href="/product"
             className={styles.cart}
             aria-label="Shopping bag, 2 items"
           >

@@ -103,7 +103,7 @@ export default function Home() {
 
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/menu"
+                href="/product"
                 className={cn(
                   buttonVariants({ size: "lg" }),
                   "bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
@@ -196,7 +196,7 @@ export default function Home() {
             </p>
           </div>
           <Link
-            href="/menu"
+            href="/product"
             className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
           >
             View Full Menu

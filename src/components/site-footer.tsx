@@ -11,8 +11,10 @@ import {
 
 const exploreLinks = [
   { label: "Home", href: "/" },
-  { label: "Menu", href: "/menu" },
+  { label: "Products", href: "/product" },
   { label: "About Us", href: "/about" },
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Login", href: "/login" },
 ];
 
 const contactItems = [

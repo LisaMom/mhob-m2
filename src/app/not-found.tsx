@@ -1,5 +1,4 @@
 import Link from "next/link";
-import SiteHeader from "@/components/site-header";
 import { ChefHat, Home, Soup, Utensils } from "lucide-react";
 import InteractivePlate from "./interactive-plate";
 import styles from "./not-found.module.css";
@@ -29,7 +28,6 @@ function ChalkDecorations() {
 export default function NotFoundPage() {
   return (
     <div className={styles.page}>
-      <SiteHeader />
       <ChalkDecorations />
       <main className={styles.content}>
         <div className={styles.intro}>
