@@ -15,6 +15,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "Menu", href: "/menu" },
   { label: "About Us", href: "/about" },
+  { label: "Login", href: "/login" },
 ];
 
 export default function SiteHeader() {
