@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { features, stats } from "@/lib/food";
 
 export const metadata: Metadata = {
-  title: "About — Mhob-M2",
+  title: "About Us — Mhob-M2",
   description:
     "Our story: from a tiny riverside cart in Phnom Penh to a neighbourhood kitchen serving honest Khmer food.",
 };

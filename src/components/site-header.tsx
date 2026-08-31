@@ -1,99 +1,77 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 import Link from "next/link";
-import { ChefHat, Menu, ShoppingBag, X } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import {
+  ChefHat,
+  Menu as MenuIcon,
+  Search,
+  ShoppingBag,
+  UserRound,
+} from "lucide-react";
+import styles from "./site-header.module.css";
 
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Menu", href: "/menu" },
-  { label: "About", href: "/about" },
+  { label: "About Us", href: "/about" },
 ];
 
 export default function SiteHeader() {
-  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDetailsElement>(null);
+
+  function closeMenu() {
+    if (menuRef.current) menuRef.current.open = false;
+  }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
-        {/* Logo */}
-        <Link
-          href="/"
-          onClick={() => setIsOpen(false)}
-          className="flex items-center gap-2"
-        >
-          <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-orange-400 to-red-500 text-white shadow-sm">
-            <ChefHat className="size-5" />
+    <header className={styles.header}>
+      <nav className={styles.nav} aria-label="Main navigation">
+        <Link href="/" className={styles.brand} aria-label="Mhob-M2 home">
+          <span className={styles.brandMark}>
+            <ChefHat size={22} strokeWidth={1.8} />
           </span>
-          <span className="text-lg font-bold tracking-tight">
-            Mhob-M2
-          </span>
+          <span>Mhob-M2</span>
         </Link>
 
-        {/* Desktop navigation */}
-        <nav className="hidden items-center gap-1 md:flex">
+        <div className={styles.navLinks}>
           {navLinks.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
+            <Link key={href} href={href}>
               {label}
             </Link>
           ))}
-        </nav>
+        </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className={styles.actions}>
+          <button type="button" aria-label="Search">
+            <Search size={19} />
+          </button>
+          <button type="button" aria-label="Your profile">
+            <UserRound size={19} />
+          </button>
           <Link
             href="/menu"
-            className={cn(
-              buttonVariants({ size: "sm" }),
-              "hidden sm:inline-flex"
-            )}
+            className={styles.cart}
+            aria-label="Shopping bag, 2 items"
           >
-            <ShoppingBag />
-            Order Now
+            <ShoppingBag size={20} />
+            <span>2</span>
           </Link>
-          <button
-            type="button"
-            aria-label="Toggle menu"
-            aria-expanded={isOpen}
-            onClick={() => setIsOpen((value) => !value)}
-            className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground md:hidden"
-          >
-            {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
         </div>
-      </div>
 
-      {/* Mobile menu */}
-      {isOpen && (
-        <nav className="border-t border-border/60 bg-background/95 px-4 py-3 backdrop-blur-md md:hidden">
-          <div className="flex flex-col gap-1">
+        <details ref={menuRef} className={styles.mobileMenu}>
+          <summary aria-label="Open navigation menu">
+            <MenuIcon size={24} />
+          </summary>
+          <div>
             {navLinks.map(({ label, href }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setIsOpen(false)}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
+              <Link key={href} href={href} onClick={closeMenu}>
                 {label}
               </Link>
             ))}
-            <Link
-              href="/menu"
-              onClick={() => setIsOpen(false)}
-              className={cn(buttonVariants({ size: "sm" }), "mt-2")}
-            >
-              <ShoppingBag />
-              Order Now
-            </Link>
           </div>
-        </nav>
-      )}
+        </details>
+      </nav>
     </header>
   );
 }

@@ -12,7 +12,7 @@ import {
 const exploreLinks = [
   { label: "Home", href: "/" },
   { label: "Menu", href: "/menu" },
-  { label: "About", href: "/about" },
+  { label: "About Us", href: "/about" },
 ];
 
 const contactItems = [
