@@ -55,40 +55,40 @@ const stats = [
 
 const team = [
   {
-    name: "Sokha",
+    name: "Chhun Sopharoth",
     role: "Founder & Head Chef",
     bio: "Still runs the same pushcart recipes she started with in 2016.",
-    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300&auto=format&fit=crop",
+    image: "/images/paroth.jpg",
   },
   {
-    name: "Dara",
+    name: "Chhomna Daraguel",
     role: "Co-Founder & Operations",
     bio: "Keeps the kitchen running and the market runs on schedule.",
-    image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=300&auto=format&fit=crop",
+    image: "/images/Raguel.jpg",
   },
   {
-    name: "Chenda",
+    name: "Kim Sreypin",
     role: "Sous Chef",
     bio: "Grill master — every skewer passes through her hands.",
-    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=300&auto=format&fit=crop",
+    image: "/images/Kim%20sreypin.jpg",
   },
   {
-    name: "Vutha",
+    name: "Kong Kimlong",
     role: "Front of House",
     bio: "The friendly face that greets every guest at the door.",
-    image: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?q=80&w=300&auto=format&fit=crop",
+    image: "/images/Kimlong.jpg",
   },
   {
-    name: "Sreymom",
+    name: "Mom Lisa",
     role: "Pastry & Desserts",
     bio: "Turns leftover market fruit into daily dessert specials.",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=300&auto=format&fit=crop",
+    image: "/images/Mom%20lisa.jpg",
   },
   {
-    name: "Pisach",
+    name: "Keo Hengleap",
     role: "Delivery & Logistics",
     bio: "Makes sure every order arrives hot, in under 30 minutes.",
-    image: "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?q=80&w=300&auto=format&fit=crop",
+    image: "/images/HengLeap.png",
   },
 ];
 
@@ -149,8 +149,8 @@ export default function AboutPage() {
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-[#e7e2d8] shadow-[0_10px_30px_rgba(0,0,0,0.06)]">
               <img
-                src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000&auto=format&fit=crop"
-                alt="Fresh vegetarian ingredients"
+                src="https://malis.thalias.com.kh/wp-content/uploads/2021/03/5_Malis-e1617104757527.jpg"
+                alt="Kuy teav soup with fresh herbs and lime, served in a white bowl on a wooden table"
                 className="h-full w-full object-cover"
               />
             </div>
