@@ -12,7 +12,6 @@ import {
   Star,
   Truck,
   Users,
-  Utensils,
 } from "lucide-react";
 import type { ComponentType } from "react";
 import { buttonVariants } from "@/components/ui/button";
@@ -96,22 +95,6 @@ const team = [
 export default function AboutPage() {
   return (
     <>
-      {/* NAVBAR */}
-      <nav className="flex items-center justify-between border-b border-[#e7e2d8] px-6 py-5">
-        <div className="flex items-center gap-2.5 text-xl font-bold text-[#1f1b16]">
-          <Utensils className="text-orange-600" size={22} />
-          Mhob Khmer
-        </div>
-        <div className="hidden items-center gap-8 text-sm md:flex">
-          <Link href="/" className="font-medium text-[#1f1b16] transition-colors hover:text-orange-600">
-            ទំព័រដើម (Home)
-          </Link>
-          <Link href="/product" className="font-medium text-[#1f1b16] transition-colors hover:text-orange-600">
-            មុខម្ហូបទាំងអស់ (Products)
-          </Link>
-        </div>
-      </nav>
-
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-b from-amber-50 via-amber-50/50 to-white py-20">
         <div className="mx-auto grid w-full max-w-[1152px] grid-cols-1 items-center gap-14 px-6 lg:grid-cols-2">
