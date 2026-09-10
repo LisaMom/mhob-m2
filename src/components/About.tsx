@@ -18,7 +18,7 @@ export default function About({
 
       <h1 className="text-4xl font-bold tracking-tight md:text-5xl">{title}</h1>
 
-      <p className="mt-6 max-w-2xl text-lg text-slate-600">{description}</p>
+      <p className="mt-6 max-w-2xl text-lg text-muted-foreground">{description}</p>
 
       <div className="mt-8 flex gap-4">
         <Link href="/">

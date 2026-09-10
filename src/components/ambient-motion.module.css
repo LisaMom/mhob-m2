@@ -1,0 +1,65 @@
+.layer {
+  position: fixed;
+  inset: 76px 0 0;
+  z-index: 20;
+  overflow: hidden;
+  contain: strict;
+  pointer-events: none;
+  user-select: none;
+  color: #c46a25;
+  /* Keep the strongest decoration at the edges, away from reading areas. */
+  mask-image: linear-gradient(to right, #000, #0006 18%, transparent 32%, transparent 68%, #0006 82%, #000);
+}
+
+.particle {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.16;
+  filter: blur(0.5px);
+  animation: ambient-drift var(--float-duration) ease-in-out var(--float-delay) infinite;
+}
+
+.particle:nth-child(3n) {
+  filter: blur(0.9px);
+}
+
+:global(.dark) .layer {
+  color: #fdba74;
+}
+
+@keyframes ambient-drift {
+  0%, 100% {
+    transform: translate3d(0, 8px, 0) rotate(-6deg);
+    opacity: 0.09;
+  }
+  50% {
+    transform: translate3d(var(--float-x), -20px, 0) rotate(var(--float-turn));
+    opacity: 0.2;
+  }
+}
+
+@media (max-width: 760px) {
+  .layer {
+    inset-block-start: 68px;
+    mask-image: linear-gradient(to right, #0008, transparent 12%, transparent 88%, #0008);
+  }
+
+  .particle:nth-child(n + 5) {
+    display: none;
+  }
+
+  .particle svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce), print {
+  .layer {
+    display: none;
+  }
+
+  .particle {
+    animation: none;
+  }
+}

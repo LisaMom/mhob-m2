@@ -78,7 +78,7 @@ export default function Home() {
       <section id="home" className="relative overflow-hidden">
         <div
           aria-hidden
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-orange-50 via-amber-50/50 to-background"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-orange-50 via-amber-50/50 to-background dark:from-orange-950/40 dark:via-background"
         />
         <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-2 lg:pt-20">
           <div className="space-y-8">

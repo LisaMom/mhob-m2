@@ -9,6 +9,7 @@ import {
   ShoppingBag,
   UserRound,
 } from "lucide-react";
+import ThemeToggle from "./theme-toggle";
 import styles from "./site-header.module.css";
 
 const navLinks = [
@@ -60,6 +61,8 @@ export default function SiteHeader() {
             <span>2</span>
           </Link>
         </div>
+
+        <ThemeToggle className={styles.themeToggle} />
 
         <details ref={menuRef} className={styles.mobileMenu}>
           <summary aria-label="Open navigation menu">
